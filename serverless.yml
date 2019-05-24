@@ -69,7 +69,7 @@ functions:
   greektv_checker:
     handler: checker.start_checks
     events:
-      - schedule: rate(1 hours)
+      - schedule: rate(60 minutes)
 #    layers:
 #      - {Ref: PymysqlLambdaLayer}
 
