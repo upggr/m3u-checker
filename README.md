@@ -6,4 +6,6 @@
 
 3.Enter remote mysql server details in : rds_config_db.py (rename the sample)
 
-4.use the serverless.yml to deploy to lambda and run it from the region you want
+4.Run pip3 install pymysql --target .   (in this directory)
+
+5.use the serverless.yml to deploy to lambda and run it from the region you want (for example user serverless dashboard in atom or the command line)
