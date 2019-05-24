@@ -42,13 +42,19 @@ def update_img(title,image_logo):
 
 def check_status(path,media_type):
     if media_type == 'hls':
-        r = requests.head(path, timeout=15)
-        if  (r.status_code == 200) or (r.status_code == 405):
-            return 1
-        else:
+        try:
+            r = requests.head(path, timeout=5)
+            if  (r.status_code == 200) or (r.status_code == 405):
+                return 1
+            else:
+                return 0
+        except Exception as ex:
+#            raise Exception("timeout", ex)
+#            print("timeout")
             return 0
+            pass
     elif media_type == 'youtube':
-        r = requests.head(path, timeout=15)
+        r = requests.head(path, timeout=5)
         if  (r.status_code == 200) or (r.status_code == 405):
             return 1
         else:
