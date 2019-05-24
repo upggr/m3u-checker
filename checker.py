@@ -60,7 +60,7 @@ def find_media_type(path):
     the_uri = path.strip()
     first_let = the_uri[:3]
     last_let = the_uri[-2:]
-    print (first_let,last_let)
+#    print (first_let,last_let)
     if first_let == "htt":
         if "youtu" in path:
             return 'youtube'
@@ -84,11 +84,8 @@ def fileExt( url ):
     reQuery = re.compile( r'\?.*$', re.IGNORECASE )
     rePort = re.compile( r':[0-9]+', re.IGNORECASE )
     reExt = re.compile( r'(\.[A-Za-z0-9]+$)', re.IGNORECASE )
-
     url = reQuery.sub( "", url )
-
     url = rePort.sub( "", url )
-
     matches = reExt.search( url )
     if None != matches:
         return matches.group( 1 )
