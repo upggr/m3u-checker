@@ -21,6 +21,12 @@ provider:
   name: aws
   runtime: python3.7
   timeout: 100
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - lambda:InvokeFunction
+        - lambda:InvokeAsync
+      Resource: "*"
 
 #layers:
 #  pymysql:
@@ -70,6 +76,8 @@ functions:
     handler: checker.start_checks
     events:
       - schedule: rate(60 minutes)
+  greektv_f_creator:
+    handler: f_creator.start_creation
 #    layers:
 #      - {Ref: PymysqlLambdaLayer}
 

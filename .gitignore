@@ -24,3 +24,5 @@ __pycache__
 #ielko excludes - remember to install pymysql locally : pip install pymysql --target .
 rds_config_db.py
 pymysql
+output
+img
