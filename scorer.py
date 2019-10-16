@@ -6,7 +6,7 @@ from urllib.parse import urlparse
 import codecs
 from contextlib import closing
 from botocore.vendored import requests
-import requests
+#import requests
 import datetime
 import time
 import json
