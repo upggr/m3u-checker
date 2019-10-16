@@ -9,6 +9,7 @@ import boto3
 import os
 import lxml
 from lxml import etree
+import progressbar
 
 mydb = pymysql.connect(rds_config_db.host,rds_config_db.user,rds_config_db.passwd,rds_config_db.database)
 bucket_name = rds_config_db.bucket_name
@@ -24,21 +25,21 @@ s3_img_location = "https://"+bucket_name+".s3."+s3_bucket_location+".amazonaws.c
 
 def db_get_countries():
     mycursor = mydb.cursor()
-    sql = "select country from v_countries"
+    sql = "select distinct stream_status_country from stream_checks"
     mycursor.execute(sql)
     rows = mycursor.fetchall()
     return (rows)
 
 def db_get_channels():
     mycursor = mydb.cursor()
-    sql = "select stream_title from v_streams"
+    sql = "select stream_title from streams"
     mycursor.execute(sql)
     rows = mycursor.fetchall()
     return (rows)
 
 def db_get_cats():
     mycursor = mydb.cursor()
-    sql = "select cat_name,cat_img_sd,cat_img_hd from v_cats"
+    sql = "select cat_name,cat_img_sd,cat_img_hd from stream_cat_img"
     mycursor.execute(sql)
     rows = mycursor.fetchall()
     return (rows)
@@ -46,10 +47,18 @@ def db_get_cats():
 def upload_to_s3(temp_path,fname,the_type):
     fpath_orig = temp_path+"/"+fname
     filename = fname
+
+    statinfo = os.stat(fpath_orig)
+    up_progress = progressbar.progressbar.ProgressBar(maxval=statinfo.st_size)
+    up_progress.start()
+    def upload_progress(chunk):
+        up_progress.update(up_progress.currval + chunk)
+
     if the_type == 'json':
-        s3_c.upload_file(fpath_orig, bucket_name, filename,ExtraArgs={'ContentType': "application/json"})
+        s3_c.upload_file(fpath_orig, bucket_name, filename,ExtraArgs={'ContentType': "application/json"},Callback=upload_progress)
     else:
-        s3_c.upload_file(fpath_orig, bucket_name, filename)
+        s3_c.upload_file(fpath_orig, bucket_name, filename,Callback=upload_progress)
+    up_progress.finish()
     object_acl = s3_r.ObjectAcl(bucket_name,filename)
     response = object_acl.put(ACL='public-read')
 
@@ -57,7 +66,7 @@ def db_get_channels_by_country_and_cat(country,cat):
 
     try:
         curs = mydb.cursor()
-        sql = 'select v_streams.stream_title,stream_cats.cat_name,stream_images.image_logo,stream_log.stream_path,stream_log.stream_type,sum(stream_log.stream_status) AS status,stream_log.stream_status_country AS country from v_streams left join stream_log on stream_log.stream_title = v_streams.stream_title left join stream_images on stream_images.stream_name = v_streams.stream_title left join stream_cats on stream_cats.stream_name = v_streams.stream_title where stream_log.stream_status_timestamp > NOW()-INTERVAL 5 HOUR and stream_log.stream_status_country = %s and stream_cats.cat_name = %s group by stream_log.stream_title,stream_log.stream_status_country'
+        sql = 'select streams.stream_title, stream_cats.cat_name, stream_images.image_logo, streams.stream_path, streams.stream_type, sum(stream_scores.score) AS status, stream_scores.stream_status_country AS country from streams left join stream_scores on stream_scores.stream_path = streams.stream_path left join stream_images on stream_images.stream_name = streams.stream_title left join stream_cats on stream_cats.stream_name = streams.stream_title where stream_scores.stream_status_country = %s and stream_cats.cat_name = %s group by streams.stream_title,stream_scores.stream_status_country'
         curs.execute(sql,(country,cat))
         rows = curs.fetchall()
         return (rows)
@@ -69,7 +78,7 @@ def db_get_channels_by_country(country):
 
     try:
         curs = mydb.cursor()
-        sql = 'select v_streams.stream_title,stream_cats.cat_name,stream_images.image_logo,stream_log.stream_path,stream_log.stream_type,sum(stream_log.stream_status) AS status,stream_log.stream_status_country AS country from v_streams left join stream_log on stream_log.stream_title = v_streams.stream_title left join stream_images on stream_images.stream_name = v_streams.stream_title left join stream_cats on stream_cats.stream_name = v_streams.stream_title where stream_log.stream_status_timestamp > NOW()-INTERVAL 5 HOUR and stream_log.stream_status_country = %s group by stream_log.stream_title,stream_log.stream_status_country'
+        sql = 'select v_streams.stream_title,stream_cats.cat_name,stream_images.image_logo,stream_log.stream_path,stream_log.stream_type,sum(stream_log.stream_status) AS status,stream_log.stream_status_country AS country from v_streams left join stream_log on stream_log.stream_title = v_streams.stream_title left join stream_images on stream_images.stream_name = v_streams.stream_title left join stream_cats on stream_cats.stream_name = v_streams.stream_title where stream_log.stream_status_timestamp > NOW()-INTERVAL 72 HOUR and stream_log.stream_status_country = %s group by stream_log.stream_title,stream_log.stream_status_country'
         curs.execute(sql,(country))
         rows = curs.fetchall()
         return (rows)
@@ -97,8 +106,8 @@ def start_creation(t1,t2):
         data_el = etree.Element('categories')
         category_el = etree.SubElement(data_el, "category", title = 'Greek Broadcasting', sd_img = "test", hd_img = "test")
         for cat in cats:
-            category_leaf_el = etree.SubElement(category_el, "categoryLeaf", title = cat[0], description='test', feed="test")
-        data_roku_category_leaf = etree.tostring(data_el, encoding='utf-8', xml_declaration = True, pretty_print = True)
+            category_leaf_el = etree.SubElement(category_el, "categoryLeaf", title = cat[0].strip(), description='test', feed="test")
+        data_roku_category_leaf = etree.tostring(data_el, encoding='utf-8', xml_declaration = False, pretty_print = True)
 #       roku category leaf xml
 
 #       roku direct publisher feed
@@ -120,7 +129,7 @@ def start_creation(t1,t2):
                 channel_country = channel[6]
                 channel_cat = cat[0]
 
-                if channel_type == "hls" and channel_active > 0:
+                if channel_type == "hls" and channel_active > 0.65:
                     data_roku_dp_content = []
                     data_roku_dp_videos = []
                     data_roku_dp_videos.append({
@@ -158,9 +167,9 @@ def start_creation(t1,t2):
             os.remove('output'+"/"+fname_basic_xml)
 
         with open("output/"+fname_roku_category_leaf_xml, "w") as outfile:
-            outfile.write(str(data_roku_category_leaf))
-            print (data_roku_category_leaf.decode('utf-8'))
-#            upload_to_s3('output',fname_roku_category_leaf,'xml')
+            outfile.write(str(data_roku_category_leaf.decode('utf-8')))
+#            print (data_roku_category_leaf.decode('utf-8'))
+            upload_to_s3('output',fname_roku_category_leaf_xml,'xml')
             os.remove('output'+"/"+fname_roku_category_leaf_xml)
 
 

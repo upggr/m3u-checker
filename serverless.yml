@@ -72,12 +72,20 @@ provider:
 #    - exclude-me-dir/**
 
 functions:
-  greektv_checker:
-    handler: checker.start_checks
-    events:
-      - schedule: rate(60 minutes)
+#  greektv_checker:
+#    handler: checker.start_checks
+#    events:
+#      - schedule: rate(300 minutes)
   greektv_f_creator:
     handler: f_creator.start_creation
+  greektv_syncer:
+    handler: syncer.start_sync
+    events:
+      - schedule: rate(12 hours)
+  greektv_scorer:
+    handler: scorer.start_scoring
+    events:
+      - schedule: rate(2 hours)
 #    layers:
 #      - {Ref: PymysqlLambdaLayer}
 
