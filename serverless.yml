@@ -76,8 +76,8 @@ functions:
 #    handler: checker.start_checks
 #    events:
 #      - schedule: rate(300 minutes)
-  greektv_f_creator:
-    handler: f_creator.start_creation
+#  greektv_f_creator:
+#    handler: f_creator.start_creation
   greektv_syncer:
     handler: syncer.start_sync
     events:
