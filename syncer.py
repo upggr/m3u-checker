@@ -18,6 +18,7 @@ class Track:
         self.path = path
 
 def_addr = target_addr.def_addr
+def_addr2 = target_addr.def_addr_2
 mydb = pymysql.connect(rds_config_db.host,rds_config_db.user,rds_config_db.passwd,rds_config_db.database)
 
 
@@ -42,6 +43,8 @@ def find_media_type(path):
                 return 'hls'
             elif last_let == "ts":
                 return 'ts'
+            elif last_let == "ls":
+                return 'pls'
             else:
                 return 'unknown http'
     elif  first_let == "rtm":
@@ -95,12 +98,38 @@ def parse(uri):
                 raise Exception("Can't parse line %d: %s" % (line_no, line), ex)
     return playlist
 
+ 
+def parse2(uri):
+    with closing(urllib.request.urlopen(uri)
+                 if is_url(uri)
+                else open(uri, 'r', encoding='utf8')) as inf:
+
+        playlist = []
+        song = Track(None, None, None)
+        for line_no, line in enumerate(inf):
+            try:
+                line = line.decode("utf-8")
+                if line.startswith('#EXTINF:'):
+                    length, title = line.split('#EXTINF:')[1].split(',', 1)
+                    song = Track(length, title, None)
+                elif line.startswith('#'):
+                    pass
+                elif len(line) != 0:
+                    song.path = line
+                    playlist.append(song)
+                    song = Track(None, None, None)
+            except Exception as ex:
+                raise Exception("Can't parse line %d: %s" % (line_no, line), ex)
+    return playlist
 
 #if __name__ == '__main__':
 def start_sync(t1,t2):
     m3ufile = def_addr
+#    m3ufile2 = def_addr2
     index=1
+#    index2=1
     playlist = parse(m3ufile)
+#    playlist2 = parse2(m3ufile2)
 
     for item in playlist:
         if(item.title is not None):
@@ -120,13 +149,15 @@ def start_sync(t1,t2):
                 media_type = find_media_type(path)
                 if title:
                     enterdb_log(title,img,path,media_type)
-
-#                print ("path : "+item.path)
-#                print ("title : "+item.title)
-#                print ("media type : "+media_type)
-#                print ("img : "+img)
-#                print ("img to store : "+img_to_store)
-#                print ('----------')
                 index += 1
-#        else:
-#            print ("item title empty")
+
+
+#    for item in playlist2:
+#        if(item.title is not None):
+#            path = item.path.strip()
+#            title = item.title.strip()
+#            if item.length:
+#                media_type = find_media_type(path)
+#                if title:
+#                    enterdb_log(title,img,path,media_type)
+#                index += 1
