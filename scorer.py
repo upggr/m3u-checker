@@ -82,8 +82,8 @@ def check_status_code(path):
         else :
             return r1.status_code
     except Exception as ex:
-#            raise Exception("timeout", ex)
-#            print("timeout")
+            raise Exception("timeout", ex)
+            print("timeout")
         return 0
         pass
 
