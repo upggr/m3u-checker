@@ -5,8 +5,8 @@ import urllib.request
 from urllib.parse import urlparse
 import codecs
 from contextlib import closing
-#from botocore.vendored import requests
-import requests
+from botocore.vendored import requests
+#import requests
 import datetime
 import time
 import json
@@ -209,8 +209,8 @@ def start_checks(t1,t2):
         if title:
             enterdb_log(title,path,media_type,uri_status,country)
 
-        print ("path : "+item.path)
-        print ("title : "+item.title)
+#        print ("path : "+item.path)
+#        print ("title : "+item.title)
 #        print (uri_status)
 #        print ("media type : "+media_type)
 #        print ("img ext : "+img_ext)
