@@ -20,7 +20,7 @@ service: aws-python3 # NOTE: update this with your service name
 provider:
   name: aws
   runtime: python3.7
-  timeout: 100
+  timeout: 500
   iamRoleStatements:
     - Effect: Allow
       Action:
