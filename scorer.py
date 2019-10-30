@@ -5,8 +5,8 @@ import urllib.request
 from urllib.parse import urlparse
 import codecs
 from contextlib import closing
-from botocore.vendored import requests
-#import requests
+#from botocore.vendored import requests
+import requests
 import datetime
 import time
 import json
@@ -169,7 +169,7 @@ def start_scoring(t1,t2):
             uri_status_code = 'NA'
         if path:
             enterdb_log(path,uri_status,uri_status_code,country)
-#        print ("path : "+path)
+        print ("path : "+path)
 #        print ("type : "+stream_type)
 #        print (uri_status)
 #        print ('----------')
