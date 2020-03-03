@@ -4,7 +4,7 @@ import urllib
 import urllib.request
 from urllib.parse import urlparse
 from contextlib import closing
-#from botocore.vendored import requests
+from botocore.vendored import requests
 import rds_config_db
 import target_addr
 import pymysql
