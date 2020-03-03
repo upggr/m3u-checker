@@ -36,7 +36,7 @@ def find_media_type(path):
     last_let = the_uri[-2:]
 #    print (first_let,last_let)
     if first_let == "htt":
-        if "youtu" in path:
+        if "youtube.com" in path:
             return 'youtube'
         else:
             if last_let == 'u8':
