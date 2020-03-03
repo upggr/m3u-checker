@@ -90,7 +90,7 @@ def check_status_code(path):
 def check_status(path,media_type):
     if media_type == 'hls':
         st = check_status_code(path)
-        if  (st == 200) or (st == 405) or (st == 301):
+        if  (st == 200) or (st == 405) or (st == 301) or (st == 302):
             return 1
         else :
             return 0
