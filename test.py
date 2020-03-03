@@ -1,5 +1,5 @@
 import requests
-path = "http://master.cystreams.com:25461/live/epistrofi/epistrofi123/44.m3u8"
+path = "https://c98db5952cb54b358365984178fb898a.msvdn.net/live/S86713049/gonOwuUacAxM/playlist.m3u8"
 path2 = "https://antennalivesp-lh.akamaihd.net/i/live_1@715138/master.m3u8"
 
 

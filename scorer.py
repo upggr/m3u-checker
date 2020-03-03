@@ -160,7 +160,7 @@ def parse(uri):
 def start_scoring(t1,t2):
     index=1
     for item in returned_paths:
-        print(item[2].strip())
+#        print(item[2].strip())
         path = item[0].strip()
         stream_type = item[1].strip()
         uri_status = check_status(path,stream_type)
@@ -170,8 +170,8 @@ def start_scoring(t1,t2):
             uri_status_code = 'NA'
         if path:
             enterdb_log(path,uri_status,uri_status_code,country)
-        print ("path : "+path)
-        print ("type : "+stream_type)
-        print (uri_status)
-        print ('----------')
+#        print ("path : "+path)
+#        print ("type : "+stream_type)
+#        print (uri_status)
+#        print ('----------')
         index += 1
