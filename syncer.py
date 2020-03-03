@@ -4,7 +4,7 @@ import urllib
 import urllib.request
 from urllib.parse import urlparse
 from contextlib import closing
-from botocore.vendored import requests
+#from botocore.vendored import requests
 import rds_config_db
 import target_addr
 import pymysql
@@ -98,7 +98,7 @@ def parse(uri):
                 raise Exception("Can't parse line %d: %s" % (line_no, line), ex)
     return playlist
 
- 
+
 def parse2(uri):
     with closing(urllib.request.urlopen(uri)
                  if is_url(uri)
