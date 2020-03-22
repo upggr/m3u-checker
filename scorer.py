@@ -45,7 +45,7 @@ def enterdb_log(path,status,status_code,country):
 def get_paths():
     mycursor = mydb.cursor()
     sql = "SELECT distinct stream_path,stream_type,stream_title from streams "
-    sql = "SELECT distinct stream_path,stream_type,stream_title from streams WHERE stram_title = 'MEGA HD'"
+    sql = "SELECT distinct stream_path,stream_type,stream_title from streams WHERE stream_title = 'MEGA HD'"
     mycursor.execute(sql)
     return mycursor.fetchall()
 
