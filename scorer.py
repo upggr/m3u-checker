@@ -170,8 +170,8 @@ def start_scoring(t1,t2):
             uri_status_code = 'NA'
         if path:
             enterdb_log(path,uri_status,uri_status_code,country)
-#        print ("path : "+path)
-#        print ("type : "+stream_type)
-#        print (uri_status)
+        print ("path : "+path)
+        print ("type : "+stream_type)
+        print (uri_status)
 #        print ('----------')
         index += 1
