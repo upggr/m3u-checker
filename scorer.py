@@ -90,6 +90,7 @@ def check_status_code(path):
 def check_status(path,media_type):
     if media_type == 'hls':
         st = check_status_code(path)
+        print(st)
         if  (st == 200) or (st == 405) or (st == 301) or (st == 302):
             return 1
         else :
@@ -170,8 +171,8 @@ def start_scoring(t1,t2):
             uri_status_code = 'NA'
         if path:
             enterdb_log(path,uri_status,uri_status_code,country)
-        print ("path : "+path)
-        print ("type : "+stream_type)
-        print (uri_status)
+#        print ("path : "+path)
+#        print ("type : "+stream_type)
+#        print (uri_status)
 #        print ('----------')
         index += 1
