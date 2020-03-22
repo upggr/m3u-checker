@@ -44,7 +44,8 @@ def enterdb_log(path,status,status_code,country):
 
 def get_paths():
     mycursor = mydb.cursor()
-    sql = "SELECT distinct stream_path,stream_type,stream_title from streams"
+    sql = "SELECT distinct stream_path,stream_type,stream_title from streams "
+    sql = "SELECT distinct stream_path,stream_type,stream_title from streams WHERE stram_title = 'MEGA HD'"
     mycursor.execute(sql)
     return mycursor.fetchall()
 
@@ -90,7 +91,7 @@ def check_status_code(path):
 def check_status(path,media_type):
     if media_type == 'hls':
         st = check_status_code(path)
-        print(st)
+        print(path,st)
         if  (st == 200) or (st == 405) or (st == 301) or (st == 302):
             return 1
         else :
