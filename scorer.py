@@ -113,7 +113,7 @@ def check_status(path,media_type):
 
 
 def get_youtube_restriction(api_url):
-    print (api_url)
+#    print (api_url)
     with urllib.request.urlopen(api_url) as url:
         data = json.loads(url.read())
         if len(data['items']) > 0:
