@@ -146,9 +146,13 @@ def start_sync(t1,t2):
                     img_ext = fileExt(img)
                     img_fname = title.replace(' ','').lower()
                 else:
-                    img_ext = none
-                    img_fname = none
-                img_to_store = img_fname+img_ext
+                    img = None
+                    img_ext = None
+                    img_fname = None
+                if img_fname is not None and img_ext is not None:
+                    img_to_store = img_fname + img_ext
+                else:
+                    img_to_store = None
                 media_type = find_media_type(path)
                 if title:
                     enterdb_log(title,img,path,media_type)
