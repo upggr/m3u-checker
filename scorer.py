@@ -28,7 +28,7 @@ def_youtube_api_key = rds_config_db.youtube_api
 mydb = pymysql.connect(rds_config_db.host,rds_config_db.user,rds_config_db.passwd,rds_config_db.database)
 
 def check_country():
-    url = "https://geoip-db.com/json"
+    url = "https://geolocation-db.com/json"
     response = urllib.request.urlopen(url)
     data = json.loads(response.read())
     return data['country_code']
@@ -160,6 +160,7 @@ def parse(uri):
 
 
 def start_scoring(t1,t2):
+    print ("test")
     index=1
     for item in returned_paths:
 #        print(item[2].strip())

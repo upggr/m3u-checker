@@ -138,7 +138,10 @@ def start_sync(t1,t2):
             p = re.compile("tvg-logo=\"(.*)\"")
             if item.length:
                 result = p.search(item.length)
-                img = result.group(1)
+                if result:
+                    img = result.group(1)
+                else:
+                    img = ''
                 if (img != ''):
                     img_ext = fileExt(img)
                     img_fname = title.replace(' ','').lower()
@@ -150,6 +153,7 @@ def start_sync(t1,t2):
                 if title:
                     enterdb_log(title,img,path,media_type)
                 index += 1
+
 
 
 #    for item in playlist2:
